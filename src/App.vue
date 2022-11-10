@@ -1,99 +1,102 @@
 <script>
+import HeaderInput from "./components/Header.vue";
 
 const filters = {
   all: (todos) => todos,
   active: (todos) => todos.filter((todo) => !todo.completed),
-  completed: (todos) => todos.filter((todo) => todo.completed)
-}
+  completed: (todos) => todos.filter((todo) => todo.completed),
+};
 
 export default {
+  components: { HeaderInput },
   data: () => ({
     todos: [],
     editedTodo: null,
-    visibility: 'all'
+    visibility: "all",
+    textValue: "",
   }),
 
   computed: {
     filteredTodos() {
-      return filters[this.visibility](this.todos)
+      return filters[this.visibility](this.todos);
     },
     remaining() {
-      return filters.active(this.todos).length
-    }
+      return filters.active(this.todos).length;
+    },
   },
 
   methods: {
     toggleAll(e) {
-      this.todos.forEach((todo) => (todo.completed = e.target.checked))
+      this.todos = this.todos.map((todo) => {
+        todo.completed = e.target.checked;
+        return todo;
+      });
     },
 
-    addTodo(e) {
-      const value = e.target.value.trim()
+    addTodo() {
+      const value = this.textValue.trim();
       if (!value) {
-        return
+        return;
       }
       this.todos.push({
         id: Date.now(),
         title: value,
-        completed: false
-      })
-      e.target.value = ''
+        completed: false,
+      });
+      this.textValue = "";
     },
 
     removeTodo(todo) {
-      this.todos.splice(this.todos.indexOf(todo), 1)
+      this.todos.splice(this.todos.indexOf(todo), 1);
     },
 
     editTodo(todo) {
-      this.beforeEditCache = todo.title
-      this.editedTodo = todo
+      this.beforeEditCache = todo.title;
+      this.editedTodo = todo;
     },
 
     doneEdit(todo) {
       if (!this.editedTodo) {
-        return
+        return;
       }
-      this.editedTodo = null
-      todo.title = todo.title.trim()
+      this.editedTodo = null;
+      todo.title = todo.title.trim();
       if (!todo.title) {
-        this.removeTodo(todo)
+        this.removeTodo(todo);
       }
     },
 
     cancelEdit(todo) {
-      this.editedTodo = null
-      todo.title = this.beforeEditCache
+      this.editedTodo = null;
+      todo.title = this.beforeEditCache;
     },
 
     removeCompleted() {
-      this.todos = filters.active(this.todos)
+      this.todos = filters.active(this.todos);
     },
 
     setAll() {
-      this.visibility = 'all'
+      this.visibility = "all";
     },
 
     setActive() {
-      this.visibility = 'active'
+      this.visibility = "active";
     },
 
     setCompleted() {
-      this.visibility = 'completed'
+      this.visibility = "completed";
     },
-  }
-}
+  },
+};
 </script>
 
 <template>
   <section class="todoapp">
     <header class="header">
       <h1>todos</h1>
-      <input
-        class="new-todo"
-        autofocus
-        placeholder="What needs to be done?"
-        @keyup.enter="addTodo"
-      >
+      <form @submit.prevent="addTodo">
+        <HeaderInput v-model="textValue" />
+      </form>
     </header>
     <section class="main" v-show="todos.length">
       <input
@@ -102,7 +105,7 @@ export default {
         type="checkbox"
         :checked="remaining === 0"
         @change="toggleAll"
-      >
+      />
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
         <li
@@ -112,7 +115,7 @@ export default {
           :class="{ completed: todo.completed, editing: todo === editedTodo }"
         >
           <div class="view">
-            <input class="toggle" type="checkbox" v-model="todo.completed">
+            <input class="toggle" type="checkbox" v-model="todo.completed" />
             <label v-on:dblclick="editTodo(todo)">{{ todo.title }}</label>
             <button class="destroy" @click="removeTodo(todo)"></button>
           </div>
@@ -125,14 +128,14 @@ export default {
             @blur="doneEdit(todo)"
             @keyup.enter="doneEdit(todo)"
             @keyup.escape="cancelEdit(todo)"
-          >
+          />
         </li>
       </ul>
     </section>
     <footer class="footer" v-if="todos.length">
       <span class="todo-count">
         <strong>{{ remaining }}</strong>
-        <span>{{ remaining === 1 ? 'item' : 'items' }} left</span>
+        <span>{{ remaining === 1 ? "item" : "items" }} left</span>
       </span>
       <ul class="filters">
         <li>
@@ -145,12 +148,15 @@ export default {
           <button @click="setCompleted">Completed</button>
         </li>
       </ul>
-      <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+      <button
+        class="clear-completed"
+        @click="removeCompleted"
+        v-show="todos.length > remaining"
+      >
         Clear completed
       </button>
     </footer>
   </section>
 </template>
 
-<style>
-</style>
+<style></style>
