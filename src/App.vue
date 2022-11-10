@@ -33,7 +33,6 @@ export default {
     },
 
     addTodo(value) {
-      // const value = this.textValue.trim();
       if (!value) {
         return;
       }
@@ -42,7 +41,6 @@ export default {
         title: value,
         completed: false,
       });
-      // this.textValue = "";
     },
 
     removeTodo(todo) {
