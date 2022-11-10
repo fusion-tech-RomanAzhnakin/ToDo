@@ -1,0 +1,156 @@
+<script>
+
+const filters = {
+  all: (todos) => todos,
+  active: (todos) => todos.filter((todo) => !todo.completed),
+  completed: (todos) => todos.filter((todo) => todo.completed)
+}
+
+export default {
+  data: () => ({
+    todos: [],
+    editedTodo: null,
+    visibility: 'all'
+  }),
+
+  computed: {
+    filteredTodos() {
+      return filters[this.visibility](this.todos)
+    },
+    remaining() {
+      return filters.active(this.todos).length
+    }
+  },
+
+  methods: {
+    toggleAll(e) {
+      this.todos.forEach((todo) => (todo.completed = e.target.checked))
+    },
+
+    addTodo(e) {
+      const value = e.target.value.trim()
+      if (!value) {
+        return
+      }
+      this.todos.push({
+        id: Date.now(),
+        title: value,
+        completed: false
+      })
+      e.target.value = ''
+    },
+
+    removeTodo(todo) {
+      this.todos.splice(this.todos.indexOf(todo), 1)
+    },
+
+    editTodo(todo) {
+      this.beforeEditCache = todo.title
+      this.editedTodo = todo
+    },
+
+    doneEdit(todo) {
+      if (!this.editedTodo) {
+        return
+      }
+      this.editedTodo = null
+      todo.title = todo.title.trim()
+      if (!todo.title) {
+        this.removeTodo(todo)
+      }
+    },
+
+    cancelEdit(todo) {
+      this.editedTodo = null
+      todo.title = this.beforeEditCache
+    },
+
+    removeCompleted() {
+      this.todos = filters.active(this.todos)
+    },
+
+    setAll() {
+      this.visibility = 'all'
+    },
+
+    setActive() {
+      this.visibility = 'active'
+    },
+
+    setCompleted() {
+      this.visibility = 'completed'
+    },
+  }
+}
+</script>
+
+<template>
+  <section class="todoapp">
+    <header class="header">
+      <h1>todos</h1>
+      <input
+        class="new-todo"
+        autofocus
+        placeholder="What needs to be done?"
+        @keyup.enter="addTodo"
+      >
+    </header>
+    <section class="main" v-show="todos.length">
+      <input
+        id="toggle-all"
+        class="toggle-all"
+        type="checkbox"
+        :checked="remaining === 0"
+        @change="toggleAll"
+      >
+      <label for="toggle-all">Mark all as complete</label>
+      <ul class="todo-list">
+        <li
+          v-for="todo in filteredTodos"
+          class="todo"
+          :key="todo.id"
+          :class="{ completed: todo.completed, editing: todo === editedTodo }"
+        >
+          <div class="view">
+            <input class="toggle" type="checkbox" v-model="todo.completed">
+            <label v-on:dblclick="editTodo(todo)">{{ todo.title }}</label>
+            <button class="destroy" @click="removeTodo(todo)"></button>
+          </div>
+          <input
+            v-if="todo === editedTodo"
+            class="edit"
+            type="text"
+            v-model="todo.title"
+            @vnode-mounted="({ el }) => el.focus()"
+            @blur="doneEdit(todo)"
+            @keyup.enter="doneEdit(todo)"
+            @keyup.escape="cancelEdit(todo)"
+          >
+        </li>
+      </ul>
+    </section>
+    <footer class="footer" v-if="todos.length">
+      <span class="todo-count">
+        <strong>{{ remaining }}</strong>
+        <span>{{ remaining === 1 ? 'item' : 'items' }} left</span>
+      </span>
+      <ul class="filters">
+        <li>
+          <button @click="setAll">All</button>
+        </li>
+        <li>
+          <button @click="setActive">Active</button>
+        </li>
+        <li>
+          <button @click="setCompleted">Completed</button>
+        </li>
+      </ul>
+      <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+        Clear completed
+      </button>
+    </footer>
+  </section>
+</template>
+
+<style>
+</style>
