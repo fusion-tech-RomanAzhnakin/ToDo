@@ -2,16 +2,6 @@
 export default {
   props: ["modelValue"],
   emits: ["update:modelValue"],
-  computed: {
-    value: {
-      get() {
-        return this.modelValue;
-      },
-      set(value) {
-        this.$emit("update:modelValue", value);
-      },
-    },
-  },
 };
 </script>
 
@@ -20,6 +10,7 @@ export default {
     class="new-todo"
     autofocus
     placeholder="What needs to be done?"
-    v-model="value"
+    :value="modelValue"
+    @input="$emit('update:modelValue', $event.target.value)"
   />
 </template>

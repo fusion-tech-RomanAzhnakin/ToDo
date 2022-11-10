@@ -1,5 +1,5 @@
 <script>
-import HeaderInput from "./components/Header.vue";
+import HeaderItem from "./components/HeaderItem.vue";
 
 const filters = {
   all: (todos) => todos,
@@ -8,12 +8,11 @@ const filters = {
 };
 
 export default {
-  components: { HeaderInput },
+  components: { HeaderItem },
   data: () => ({
     todos: [],
     editedTodo: null,
     visibility: "all",
-    textValue: "",
   }),
 
   computed: {
@@ -33,8 +32,8 @@ export default {
       });
     },
 
-    addTodo() {
-      const value = this.textValue.trim();
+    addTodo(value) {
+      // const value = this.textValue.trim();
       if (!value) {
         return;
       }
@@ -43,7 +42,7 @@ export default {
         title: value,
         completed: false,
       });
-      this.textValue = "";
+      // this.textValue = "";
     },
 
     removeTodo(todo) {
@@ -92,12 +91,7 @@ export default {
 
 <template>
   <section class="todoapp">
-    <header class="header">
-      <h1>todos</h1>
-      <form @submit.prevent="addTodo">
-        <HeaderInput v-model="textValue" />
-      </form>
-    </header>
+    <HeaderItem textHeader="todos" @addTodo="addTodo($event)"></HeaderItem>
     <section class="main" v-show="todos.length">
       <input
         id="toggle-all"
