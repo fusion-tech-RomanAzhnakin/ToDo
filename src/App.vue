@@ -116,7 +116,6 @@ export default {
           @removeItem="removeTodo(todo)"
           @editItem="editTodo(todo)"
           @clickCheck="todo.completed = !todo.completed"
-          :class="{ completed: todo.completed, editing: todo === editedTodo }"
         >
         </TodoItem>
         <!--  <li
