@@ -1,7 +1,7 @@
 <script>
 import HeaderItem from "./components/HeaderItem.vue";
 import TodoItem from "./components/TodoItem.vue";
-import filters from "./functions/filters.js";
+import { filters } from "./functions/filters.js";
 
 // const filters = {
 //   all: (todos) => todos,
