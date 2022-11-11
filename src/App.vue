@@ -110,7 +110,6 @@ export default {
           :key="todo.id"
           v-model="todo.title"
           :isEdit="isEdited(todo)"
-          :titleItem="todo.title"
           :completedItem="todo.completed"
           @doneItem="doneEdit(todo)"
           @cancelItem="cancelEdit(todo)"

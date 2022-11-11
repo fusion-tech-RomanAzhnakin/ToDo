@@ -1,6 +1,6 @@
 <script>
 export default {
-  props: ["modelValue", "isEdit", "titleItem", "completedItem"],
+  props: ["modelValue", "isEdit", "completedItem"],
   emits: [
     "editItem",
     "removeItem",
@@ -21,7 +21,7 @@ export default {
         v-model="completedItem"
         @click="$emit('clickCheck')"
       />
-      <label @dblclick="$emit('editItem')">{{ titleItem }}</label>
+      <label @dblclick="$emit('editItem')">{{ modelValue }}</label>
       <button class="destroy" @click="$emit('removeItem')"></button>
     </div>
     <input
