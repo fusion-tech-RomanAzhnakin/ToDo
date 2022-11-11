@@ -1,5 +1,6 @@
 <script>
 import HeaderItem from "./components/HeaderItem.vue";
+import TodoItem from "./components/TodoItem.vue";
 
 const filters = {
   all: (todos) => todos,
@@ -8,7 +9,7 @@ const filters = {
 };
 
 export default {
-  components: { HeaderItem },
+  components: { HeaderItem, TodoItem },
   data: () => ({
     todos: [],
     editedTodo: null,
@@ -83,6 +84,10 @@ export default {
     setCompleted() {
       this.visibility = "completed";
     },
+
+    isEdited(todoLocal) {
+      return todoLocal === this.editedTodo;
+    },
   },
 };
 </script>
@@ -100,15 +105,30 @@ export default {
       />
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
-        <li
+        <TodoItem
+          v-for="todo in filteredTodos"
+          :key="todo.id"
+          v-model="todo.title"
+          :isEdit="isEdited(todo)"
+          :titleItem="todo.title"
+          :completedItem="todo.completed"
+          @doneItem="doneEdit(todo)"
+          @cancelItem="cancelEdit(todo)"
+          @removeItem="removeTodo(todo)"
+          @editItem="editTodo(todo)"
+          @clickCheck="todo.completed = !todo.completed"
+          :class="{ completed: todo.completed, editing: todo === editedTodo }"
+        >
+        </TodoItem>
+        <!--  <li
           v-for="todo in filteredTodos"
           class="todo"
           :key="todo.id"
           :class="{ completed: todo.completed, editing: todo === editedTodo }"
         >
-          <div class="view">
+            <div class="view">
             <input class="toggle" type="checkbox" v-model="todo.completed" />
-            <label v-on:dblclick="editTodo(todo)">{{ todo.title }}</label>
+            <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
             <button class="destroy" @click="removeTodo(todo)"></button>
           </div>
           <input
@@ -120,8 +140,8 @@ export default {
             @blur="doneEdit(todo)"
             @keyup.enter="doneEdit(todo)"
             @keyup.escape="cancelEdit(todo)"
-          />
-        </li>
+          /> 
+        </li>-->
       </ul>
     </section>
     <footer class="footer" v-if="todos.length">
