@@ -13,7 +13,7 @@ export default {
 </script>
 
 <template>
-  <li class="todo" :class="{ completed: completedItem, editing: isEdit }">
+  <li class="todo">
     <div class="view">
       <input
         class="toggle"
