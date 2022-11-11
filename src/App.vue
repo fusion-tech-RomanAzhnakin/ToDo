@@ -1,12 +1,13 @@
 <script>
 import HeaderItem from "./components/HeaderItem.vue";
 import TodoItem from "./components/TodoItem.vue";
+import filters from "./functions/filters.js";
 
-const filters = {
-  all: (todos) => todos,
-  active: (todos) => todos.filter((todo) => !todo.completed),
-  completed: (todos) => todos.filter((todo) => todo.completed),
-};
+// const filters = {
+//   all: (todos) => todos,
+//   active: (todos) => todos.filter((todo) => !todo.completed),
+//   completed: (todos) => todos.filter((todo) => todo.completed),
+// };
 
 export default {
   components: { HeaderItem, TodoItem },
