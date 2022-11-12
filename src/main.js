@@ -6,4 +6,5 @@ const app = createApp(App);
 app.mount("#app");
 app.config.errorHandler = (err) => {
   /* handle error */
+  console.log(err);
 };

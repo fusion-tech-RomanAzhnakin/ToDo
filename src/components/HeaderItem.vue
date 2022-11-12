@@ -3,7 +3,7 @@ import HeaderInput from "./HeaderInput.vue";
 
 export default {
   components: { HeaderInput },
-  props: ["textHeader"],
+  props: { textHeader: String },
   emits: ["addTodo"],
   data: () => ({
     textValue: "",
