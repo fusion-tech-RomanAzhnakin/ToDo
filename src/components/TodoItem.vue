@@ -1,40 +1,12 @@
 <script>
+import { useTodos } from "@/stores/todos";
+
 export default {
-  props: {
-    todosParent: Array,
-  },
-  data() {
+  setup() {
+    const store = useTodos();
     return {
-      todos: this.todosParent,
-      editedTodo: null,
+      store,
     };
-  },
-
-  methods: {
-    removeTodo(todo) {
-      this.todos.splice(this.todos.indexOf(todo), 1);
-    },
-
-    editTodo(todo) {
-      this.beforeEditCache = todo.title;
-      this.editedTodo = todo;
-    },
-
-    doneEdit(todo) {
-      if (!this.editedTodo) {
-        return;
-      }
-      this.editedTodo = null;
-      todo.title = todo.title.trim();
-      if (!todo.title) {
-        this.removeTodo(todo);
-      }
-    },
-
-    cancelEdit(todo) {
-      this.editedTodo = null;
-      todo.title = this.beforeEditCache;
-    },
   },
 };
 </script>
@@ -42,25 +14,25 @@ export default {
 <template>
   <ul class="todo-list">
     <li
-      v-for="todo in todosParent"
+      v-for="todo in store.filteredTodos"
       class="todo"
       :key="todo.id"
-      :class="{ completed: todo.completed, editing: todo === editedTodo }"
+      :class="{ completed: todo.completed, editing: todo === store.editedTodo }"
     >
       <div class="view">
         <input class="toggle" type="checkbox" v-model="todo.completed" />
-        <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-        <button class="destroy" @click="removeTodo(todo)"></button>
+        <label @dblclick="store.editTodo(todo)">{{ todo.title }}</label>
+        <button class="destroy" @click="store.removeTodo(todo)"></button>
       </div>
       <input
-        v-if="todo === editedTodo"
+        v-if="todo === store.editedTodo"
         class="edit"
         type="text"
         v-model="todo.title"
         @vnode-mounted="({ el }) => el.focus()"
-        @blur="doneEdit(todo)"
-        @keyup.enter="doneEdit(todo)"
-        @keyup.escape="cancelEdit(todo)"
+        @blur="store.doneEdit(todo)"
+        @keyup.enter="store.doneEdit(todo)"
+        @keyup.escape="store.cancelEdit(todo)"
       />
     </li>
   </ul>
